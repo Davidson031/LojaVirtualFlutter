@@ -1,8 +1,10 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:quitanda_virtual/src/pages/auth/screens/sign_up_screen.dart';
 import 'package:quitanda_virtual/src/pages/base/base_screen.dart';
 import 'package:quitanda_virtual/src/pages/common_widgets/app_name_widget.dart';
+import 'package:quitanda_virtual/src/routes/app_pages.dart';
 
 import '../../../config/custom_colors.dart';
 import '../../common_widgets/custom_textfield.dart';
@@ -67,12 +69,7 @@ class SignInScreen extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18))),
                         onPressed: () {
-                          Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
-                            builder: (context) {
-                              return BaseScreen();
-                            },
-                          ));
+                          Get.offNamed(PagesRoutes.baseScreenRoute);
                         },
                         child: const Text(
                           "Entrar",
@@ -122,8 +119,7 @@ class SignInScreen extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18))),
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (ctx) => SignUpScreen()));
+                          Get.toNamed(PagesRoutes.signUpRoute);
                         },
                         child: const Text(
                           "Criar Conta",
