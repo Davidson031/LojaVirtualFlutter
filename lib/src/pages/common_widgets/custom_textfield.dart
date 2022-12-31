@@ -8,16 +8,26 @@ class CustomTextField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final String? initial;
   final bool isReadOnly;
+  final String? Function(String?)? validator;
+  final TextEditingController? controller;
 
-  CustomTextField(
-      {required this.icon, required this.labelText, this.isSecret = false, this.inputFormatters, this.initial, this.isReadOnly = false});
+
+  CustomTextField({
+    required this.icon,
+    required this.labelText,
+    this.isSecret = false,
+    this.inputFormatters,
+    this.initial,
+    this.isReadOnly = false,
+    this.validator,
+    this.controller
+  });
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-
   bool isPassword = false;
 
   @override
@@ -32,6 +42,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: TextFormField(
+        controller: widget.controller,
+        validator: widget.validator,
         inputFormatters: widget.inputFormatters,
         obscureText: isPassword,
         initialValue: widget.initial,
@@ -46,7 +58,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         isPassword = !isPassword;
                       });
                     },
-                    icon: isPassword ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off),
+                    icon: isPassword
+                        ? const Icon(Icons.visibility)
+                        : const Icon(Icons.visibility_off),
                   )
                 : null,
             isDense: true,
