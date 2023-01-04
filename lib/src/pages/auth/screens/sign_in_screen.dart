@@ -10,6 +10,7 @@ import 'package:quitanda_virtual/src/services/validators.dart';
 
 import '../../../config/custom_colors.dart';
 import '../../common_widgets/custom_textfield.dart';
+import 'components/forgot_password_dialog.dart';
 
 class SignInScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -113,7 +114,14 @@ class SignInScreen extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return ForgotPasswordDialog(email: emailController.text);
+                              },
+                            );
+                          },
                           child: const Text(
                             "Esqueceu a senha?",
                             style: TextStyle(color: Colors.red),
