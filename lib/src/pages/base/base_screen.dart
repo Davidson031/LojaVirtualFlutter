@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:quitanda_virtual/src/pages/home/controller/home_controller.dart';
 
 import '../cart/cart_tab.dart';
-import '../home/home_tab.dart';
+import '../home/view/home_tab.dart';
 import '../orders/orders_tab.dart';
 import '../profile/profile_tab.dart';
 
@@ -13,6 +15,7 @@ class BaseScreen extends StatefulWidget {
 class _BaseScreenState extends State<BaseScreen> {
   int currentIndex = 0;
   final pageController = PageController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

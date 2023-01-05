@@ -4,6 +4,7 @@ import 'package:quitanda_virtual/src/pages/common_widgets/custom_textfield.dart'
 import 'package:quitanda_virtual/src/config/app_data.dart' as appData;
 
 import '../auth/controller/auth_controller.dart';
+import '../home/controller/home_controller.dart';
 
 class ProfileTab extends StatefulWidget {
   const ProfileTab({super.key});
@@ -12,9 +13,11 @@ class ProfileTab extends StatefulWidget {
   State<ProfileTab> createState() => _ProfileTabState();
 }
 
+
 class _ProfileTabState extends State<ProfileTab> {
 
   final authController = Get.find<AuthController>();
+
   
   @override
   Widget build(BuildContext context) {
@@ -60,13 +63,13 @@ class _ProfileTabState extends State<ProfileTab> {
                   bool? res = await updatePassword();
                   print(res);
                 },
-                child: Text(
-                  "Atualizar Senha",
-                ),
                 style: OutlinedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
                     side: const BorderSide(color: Colors.green)),
+                child: const Text(
+                  "Atualizar Senha",
+                ),
               ),
             )
           ],
