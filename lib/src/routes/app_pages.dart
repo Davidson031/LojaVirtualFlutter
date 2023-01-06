@@ -6,6 +6,8 @@ import 'package:quitanda_virtual/src/pages/base/base_screen.dart';
 import 'package:quitanda_virtual/src/pages/home/binding/home_binding.dart';
 import 'package:quitanda_virtual/src/pages/splash/splash_screen.dart';
 
+import '../pages/teste_screen.dart';
+
 abstract class AppPages {
   static final pages = <GetPage>[
     GetPage(
@@ -21,11 +23,12 @@ abstract class AppPages {
       page: () => SignUpScreen(),
     ),
     GetPage(
-        name: PagesRoutes.baseScreenRoute,
-        page: () => BaseScreen(),
-        bindings: [
-          HomeBinding(),
-        ]),
+      name: PagesRoutes.baseScreenRoute,
+      page: () => BaseScreen(),
+      bindings: [
+        HomeBinding(),
+      ],
+    ),
   ];
 }
 
@@ -33,5 +36,6 @@ abstract class PagesRoutes {
   static const String splashRoute = "/splash";
   static const String signInRoute = "/signin";
   static const String signUpRoute = "/signup";
+  static const String testeRoute = "/teste";
   static const String baseScreenRoute = "/";
 }

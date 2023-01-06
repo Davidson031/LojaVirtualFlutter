@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:quitanda_virtual/src/models/category_model.dart';
 import 'package:quitanda_virtual/src/pages/home/result/home_result.dart';
 import 'package:quitanda_virtual/src/services/http_manager.dart';
@@ -15,6 +17,8 @@ class HomeRepository {
       method: HttpMethods.post,
       body: body,
     );
+
+    
 
     if (res['result'] != null) {
       List<ItemModel> data = List<Map<String, dynamic>>.from(res['result'])

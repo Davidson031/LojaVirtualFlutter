@@ -9,35 +9,56 @@ import '../../../models/item_model.dart';
 class HomeController extends GetxController {
   final homeRepository = HomeRepository();
 
-  bool isLoading = false;
 
+  RxString searchTitle = ''.obs;
+  bool isCategoryLoading = false;
+  bool isProductLoading = true;
   final UtilsServices utils = UtilsServices();
-
   List<CategoryModel> allCategories = [];
-
   CategoryModel? currentCategory;
+  List<ItemModel> get allProducts {
+    return currentCategory?.items ?? [];
+  }
+
+  
+
+  bool get isLastPage {
+    if (currentCategory!.items.length < 6) return true;
+    return currentCategory!.pagination * 6 > allProducts.length;
+  }
 
   @override
   void onInit() {
     super.onInit();
+
+    debounce(searchTitle, (_) {
+      print(searchTitle);
+    }, time: const Duration(milliseconds: 600));
+
     getAllCategories();
   }
 
-  Future<void> getAllProducts() async {
-    setLoading(true);
+  void loadMoreProducts() {
+    currentCategory!.pagination++;
+    getAllProducts(canLoad: false);
+  }
+
+  Future<void> getAllProducts({bool canLoad = true}) async {
+    if (canLoad) {
+      setLoading(true, isProduct: true);
+    }
 
     HomeResult<ItemModel> res = await homeRepository.getAllProducts({
-      "page": 0,
-      "title": null,
-      "categoryId": "5mjkt5ERRo",
+      "page": currentCategory!.pagination,
+      "categoryId": currentCategory!.id,
       "itemsPerPage": 6
     });
 
-    setLoading(false);
+    setLoading(false, isProduct: true);
 
     res.when(
       sucess: (data) {
-        print(data);
+        currentCategory!.items.addAll(data);
       },
       error: (msg) {
         utils.showToast(message: msg, isError: true);
@@ -69,14 +90,20 @@ class HomeController extends GetxController {
     );
   }
 
-  void setLoading(bool value) {
-    isLoading = value;
+  void setLoading(bool value, {bool isProduct = false}) {
+    if (!isProduct) {
+      isCategoryLoading = value;
+    } else {
+      isProductLoading = value;
+    }
     update();
   }
 
   void selectCategory(CategoryModel category) {
     currentCategory = category;
     update();
+
+    if (currentCategory!.items.isNotEmpty) return;
 
     getAllProducts();
   }

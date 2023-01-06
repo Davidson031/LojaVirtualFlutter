@@ -7,6 +7,7 @@ import 'package:quitanda_virtual/src/config/custom_colors.dart';
 import 'package:badges/badges.dart';
 import 'package:quitanda_virtual/src/config/app_data.dart' as appData;
 import 'package:quitanda_virtual/src/pages/common_widgets/custom_shimmer.dart';
+import 'package:quitanda_virtual/src/routes/app_pages.dart';
 import '../../../models/item_model.dart';
 import '../../../services/utils_services.dart';
 import '../../common_widgets/app_name_widget.dart';
@@ -32,10 +33,7 @@ class _HomeTabState extends State<HomeTab> {
     runAddToCardAnimation(gkImage);
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  final controller = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +42,7 @@ class _HomeTabState extends State<HomeTab> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        title: const AppNameWidget(),
+        title: AppNameWidget(),
         actions: [
           Padding(
             padding: const EdgeInsets.only(top: 15.0, right: 15.0),
@@ -81,31 +79,39 @@ class _HomeTabState extends State<HomeTab> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               child: TextFormField(
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: CustomColors.customContrastColor,
-                        size: 21,
-                      ),
-                      hintText: "Pesquise aqui...",
-                      hintStyle: TextStyle(
-                        color: Colors.grey[400],
-                        fontSize: 14,
-                      ),
-                      isDense: true,
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(60),
-                          borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none)))),
+                onChanged: (value) {
+                  controller.searchTitle.value = value;
+                },
+                decoration: InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: CustomColors.customContrastColor,
+                    size: 21,
+                  ),
+                  hintText: "Pesquise aqui...",
+                  hintStyle: TextStyle(
+                    color: Colors.grey[400],
+                    fontSize: 14,
+                  ),
+                  isDense: true,
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(60),
+                    borderSide: const BorderSide(
+                      width: 0,
+                      style: BorderStyle.none,
+                    ),
+                  ),
+                ),
+              ),
             ),
             GetBuilder<HomeController>(
               builder: (controller) {
                 return Container(
                   padding: const EdgeInsets.only(left: 25),
                   height: 40,
-                  child: !controller.isLoading
+                  child: !controller.isProductLoading
                       ? ListView.separated(
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
@@ -145,7 +151,7 @@ class _HomeTabState extends State<HomeTab> {
             GetBuilder<HomeController>(
               builder: (controller) {
                 return Expanded(
-                  child: !controller.isLoading
+                  child: !controller.isCategoryLoading
                       ? GridView.builder(
                           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                           physics: const BouncingScrollPhysics(),
@@ -156,10 +162,15 @@ class _HomeTabState extends State<HomeTab> {
                             crossAxisSpacing: 10,
                             childAspectRatio: 9 / 11.5,
                           ),
-                          itemCount: appData.items.length,
+                          itemCount: controller.allProducts.length,
                           itemBuilder: (context, index) {
+                            if ((index + 1) == controller.allProducts.length) {
+                              if (!controller.isLastPage) {
+                                controller.loadMoreProducts();
+                              }
+                            }
                             return ItemTile(
-                                item: appData.items[index],
+                                item: controller.allProducts[index],
                                 cartAnimationMethod:
                                     itemSelectedCertainAnimations);
                           },
