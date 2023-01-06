@@ -4,6 +4,8 @@ import 'package:quitanda_virtual/src/pages/home/repository/home_repository.dart'
 import 'package:quitanda_virtual/src/pages/home/result/home_result.dart';
 import 'package:quitanda_virtual/src/services/utils_services.dart';
 
+import '../../../models/item_model.dart';
+
 class HomeController extends GetxController {
   final homeRepository = HomeRepository();
 
@@ -19,6 +21,29 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     getAllCategories();
+  }
+
+  Future<void> getAllProducts() async {
+    setLoading(true);
+
+    HomeResult<ItemModel> res = await homeRepository.getAllProducts({
+      "page": 0,
+      "title": null,
+      "categoryId": "5mjkt5ERRo",
+      "itemsPerPage": 6
+    });
+
+    setLoading(false);
+
+    res.when(
+      sucess: (data) {
+        print(data);
+      },
+      error: (msg) {
+        utils.showToast(message: msg, isError: true);
+      },
+      teste: (msg) {},
+    );
   }
 
   Future<void> getAllCategories() async {
@@ -51,7 +76,8 @@ class HomeController extends GetxController {
 
   void selectCategory(CategoryModel category) {
     currentCategory = category;
-
     update();
+
+    getAllProducts();
   }
 }
