@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quitanda_virtual/src/pages/base/controller/navigation.controller.dart';
 import 'package:quitanda_virtual/src/pages/home/controller/home_controller.dart';
 
 import '../cart/cart_tab.dart';
@@ -13,44 +14,41 @@ class BaseScreen extends StatefulWidget {
 }
 
 class _BaseScreenState extends State<BaseScreen> {
-  int currentIndex = 0;
-  final pageController = PageController();
+  final navigationController = Get.find<NavigationController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
-        controller: pageController,
+        controller: navigationController.pageController,
         children: [
-          const HomeTab(),
+          HomeTab(),
           CartTab(),
           OrdersTab(),
           ProfileTab(),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (value) {
-          setState(() {
-            currentIndex = value;
-            pageController.animateToPage(currentIndex, duration: Duration(milliseconds: 300), curve: Curves.ease);
-          });
-        },
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.green,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white.withAlpha(100),
-        items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart_checkout_outlined), label: "Cart"),
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: "Orders"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline), label: "Account"),
-        ],
-      ),
+      bottomNavigationBar: Obx(() => BottomNavigationBar(
+            currentIndex: navigationController.currentIndex,
+            onTap: (value) {
+              navigationController.navigatePageView(value);
+            },
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.green,
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.white.withAlpha(100),
+            items: const [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home_outlined), label: "Home"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.shopping_cart_checkout_outlined),
+                  label: "Cart"),
+              BottomNavigationBarItem(icon: Icon(Icons.list), label: "Orders"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.person_outline), label: "Account"),
+            ],
+          )),
     );
   }
 }

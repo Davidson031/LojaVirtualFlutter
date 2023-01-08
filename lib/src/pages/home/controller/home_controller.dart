@@ -9,7 +9,6 @@ import '../../../models/item_model.dart';
 class HomeController extends GetxController {
   final homeRepository = HomeRepository();
 
-
   RxString searchTitle = ''.obs;
   bool isCategoryLoading = false;
   bool isProductLoading = true;
@@ -19,8 +18,6 @@ class HomeController extends GetxController {
   List<ItemModel> get allProducts {
     return currentCategory?.items ?? [];
   }
-
-  
 
   bool get isLastPage {
     if (currentCategory!.items.length < 6) return true;
@@ -32,7 +29,7 @@ class HomeController extends GetxController {
     super.onInit();
 
     debounce(searchTitle, (_) {
-      print(searchTitle);
+      filterByTitle();
     }, time: const Duration(milliseconds: 600));
 
     getAllCategories();
@@ -48,11 +45,25 @@ class HomeController extends GetxController {
       setLoading(true, isProduct: true);
     }
 
-    HomeResult<ItemModel> res = await homeRepository.getAllProducts({
+    Map<String, dynamic> body = {
       "page": currentCategory!.pagination,
       "categoryId": currentCategory!.id,
       "itemsPerPage": 6
-    });
+    };
+
+    if(searchTitle.value.isNotEmpty){
+
+      body['title'] = searchTitle.value;
+
+      if(currentCategory!.id == ''){
+        body.remove('categoryId');
+      }
+
+    }
+
+
+
+    HomeResult<ItemModel> res = await homeRepository.getAllProducts(body);
 
     setLoading(false, isProduct: true);
 
@@ -105,6 +116,39 @@ class HomeController extends GetxController {
 
     if (currentCategory!.items.isNotEmpty) return;
 
+    getAllProducts();
+  }
+
+  void filterByTitle() {
+    for (var category in allCategories) {
+      category.items.clear();
+      category.pagination = 0;
+    }
+
+    if (searchTitle.value.isEmpty) {
+      allCategories.removeAt(0);
+    } else {
+      CategoryModel? c =
+          allCategories.firstWhereOrNull((category) => category.id == '');
+
+      if (c == null) {
+        final allProductsCategory = CategoryModel(
+          title: "Todos",
+          id: "",
+          items: [],
+          pagination: 0,
+        );
+
+        allCategories.insert(0, allProductsCategory);
+      } else {
+        c.items.clear();
+
+        c.pagination = 0;
+      }
+    }
+
+    currentCategory = allCategories.first;
+    update();
     getAllProducts();
   }
 }

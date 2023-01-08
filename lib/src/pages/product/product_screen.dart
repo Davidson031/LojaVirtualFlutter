@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:quitanda_virtual/src/config/custom_colors.dart';
 import 'package:quitanda_virtual/src/services/utils_services.dart';
 
 import '../../models/item_model.dart';
+import '../base/controller/navigation.controller.dart';
 import '../common_widgets/quantity_widget.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -18,6 +20,8 @@ class _ProductScreenState extends State<ProductScreen> {
   final UtilsServices utils = UtilsServices();
 
   int cartItemQuantity = 1;
+
+  final navigationController = Get.find<NavigationController>();
 
   void alterQuantity(int qty) {
     setState(() {
@@ -36,7 +40,7 @@ class _ProductScreenState extends State<ProductScreen> {
               Expanded(
                 child: Hero(
                   tag: widget.item.imgUrl,
-                  child: Image.asset(
+                  child: Image.network(
                     widget.item.imgUrl,
                   ),
                 ),
@@ -102,7 +106,12 @@ class _ProductScreenState extends State<ProductScreen> {
                             Icons.shopping_cart_outlined,
                             color: Colors.white,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+
+                            Get.back();
+                            navigationController.navigatePageView(NavigationTabs.cart);
+
+                          },
                           style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15))),
