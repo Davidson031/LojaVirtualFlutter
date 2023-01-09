@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quitanda_virtual/src/config/custom_colors.dart';
+import 'package:quitanda_virtual/src/pages/cart/controller/cart_controller.dart';
 import 'package:quitanda_virtual/src/services/utils_services.dart';
 
 import '../../models/item_model.dart';
@@ -8,9 +9,9 @@ import '../base/controller/navigation.controller.dart';
 import '../common_widgets/quantity_widget.dart';
 
 class ProductScreen extends StatefulWidget {
-  ProductScreen({required this.item});
+  ProductScreen();
 
-  ItemModel item;
+  ItemModel item = Get.arguments;
 
   @override
   State<ProductScreen> createState() => _ProductScreenState();
@@ -22,6 +23,8 @@ class _ProductScreenState extends State<ProductScreen> {
   int cartItemQuantity = 1;
 
   final navigationController = Get.find<NavigationController>();
+
+  final CartController cart = Get.find<CartController>();
 
   void alterQuantity(int qty) {
     setState(() {
@@ -109,6 +112,9 @@ class _ProductScreenState extends State<ProductScreen> {
                           onPressed: () {
 
                             Get.back();
+
+                            cart.addItemToCart(item: widget.item, quantity: cartItemQuantity);
+
                             navigationController.navigatePageView(NavigationTabs.cart);
 
                           },

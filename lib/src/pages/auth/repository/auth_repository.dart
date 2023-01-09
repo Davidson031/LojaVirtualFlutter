@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:quitanda_virtual/src/models/user_model.dart';
 import 'package:quitanda_virtual/src/pages/auth/repository/auth_errors.dart'
     as authErrors;

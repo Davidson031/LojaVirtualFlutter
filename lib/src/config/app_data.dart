@@ -68,12 +68,12 @@ List<String> categories = [
   "Cereais"
 ];
 
-List<CartItemModel> cartItems = [
-  CartItemModel(item: grape, quantity: 2),
-  CartItemModel(item: apple, quantity: 1),
-  CartItemModel(item: mango, quantity: 3),
-  CartItemModel(item: papaya, quantity: 4),
-];
+// List<CartItemModel> cartItems = [
+//   CartItemModel(item: grape, quantity: 2),
+//   CartItemModel(item: apple, quantity: 1),
+//   CartItemModel(item: mango, quantity: 3),
+//   CartItemModel(item: papaya, quantity: 4),
+// ];
 
 UserModel user = UserModel(
   name: "Pedro",
@@ -89,9 +89,9 @@ List<OrderModel> orders = [
     createdDateTime: DateTime.parse("2021-06-08 10:00:10.458"),
     overdueDateTime: DateTime.parse("2026-06-08 11:00:10.458"),
     items: [
-      CartItemModel(item: apple, quantity: 2),
-      CartItemModel(item: mango, quantity: 1),
-      CartItemModel(item: grape, quantity: 3),
+      // CartItemModel(item: apple, quantity: 2),
+      // CartItemModel(item: mango, quantity: 1),
+      // CartItemModel(item: grape, quantity: 3),
     ],
     status: 'pending_payment',
     copyAndPaste: "e4e1fs2e4fs",
@@ -102,9 +102,9 @@ List<OrderModel> orders = [
     createdDateTime: DateTime.parse("2021-06-08 10:00:10.458"),
     overdueDateTime: DateTime.parse("2026-06-08 11:00:10.458"),
     items: [
-      CartItemModel(item: apple, quantity: 2),
-      CartItemModel(item: mango, quantity: 1),
-      CartItemModel(item: grape, quantity: 3),
+      // CartItemModel(item: apple, quantity: 2),
+      // CartItemModel(item: mango, quantity: 1),
+      // CartItemModel(item: grape, quantity: 3),
     ],
     status: 'paid',
     copyAndPaste: "e4e1fs2e4fs",
