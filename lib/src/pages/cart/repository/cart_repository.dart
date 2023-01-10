@@ -1,5 +1,6 @@
 import 'package:quitanda_virtual/src/constants/endpoints.dart';
 import 'package:quitanda_virtual/src/models/cart_item_model.dart';
+import 'package:quitanda_virtual/src/models/order_model.dart';
 import 'package:quitanda_virtual/src/pages/cart/cart_result/cart_result.dart';
 import 'package:quitanda_virtual/src/services/http_manager.dart';
 
@@ -50,7 +51,10 @@ class CartRepository {
     }
   }
 
-  Future<bool> changeItemQuantity({required String token, required cartItemId, required int quantity}) async {
+  Future<bool> changeItemQuantity(
+      {required String token,
+      required cartItemId,
+      required int quantity}) async {
     final res = await _httpManager.restRequest(
       url: EndPoints.modifyItemQuantity,
       method: HttpMethods.post,
@@ -58,10 +62,31 @@ class CartRepository {
         "cartItemId": cartItemId,
         "quantity": quantity,
       },
+      headers: {"X-Parse-Session-Token": token},
+    );
+    return (res.isEmpty);
+  }
+
+  Future<CartResult<OrderModel>> checkoutCart({required String token, required double total}) async {
+    final res = await _httpManager.restRequest(
+      url: EndPoints.checkout,
+      method: HttpMethods.post,
       headers: {
         "X-Parse-Session-Token" : token
       },
+      body: {
+        "total" : total
+      }
     );
-    return (res.isEmpty);
+
+
+    if(res['result'] != null){
+
+      final order = OrderModel.fromJson(res['result']);
+      
+      return CartResult.success(order);
+    } else {
+      return CartResult.error("Não foi possível realizar o pedido");
+    }
   }
 }

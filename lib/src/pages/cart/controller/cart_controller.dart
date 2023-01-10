@@ -1,9 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quitanda_virtual/src/models/cart_item_model.dart';
 import 'package:quitanda_virtual/src/models/item_model.dart';
+import 'package:quitanda_virtual/src/models/order_model.dart';
 import 'package:quitanda_virtual/src/pages/auth/controller/auth_controller.dart';
 import 'package:quitanda_virtual/src/pages/cart/cart_result/cart_result.dart';
 import 'package:quitanda_virtual/src/services/utils_services.dart';
+import '../../common_widgets/payment_dialog.dart';
 import '../repository/cart_repository.dart';
 
 class CartController extends GetxController {
@@ -12,6 +15,8 @@ class CartController extends GetxController {
   final UtilsServices utils = UtilsServices();
 
   List<CartItemModel> cartItems = [];
+
+  bool isCheckoutLoading = false;
 
   @override
   void onInit() {
@@ -57,20 +62,11 @@ class CartController extends GetxController {
 
     if (itemIndex >= 0) {
       //item já existe no carrinho
-
-
       //recuperando produto
       final product = cartItems[itemIndex];
 
-      final result = await changeItemQuantity(item: product, quantity: (product.quantity + quantity));
-
-      if(result){
-        cartItems[itemIndex].quantity += quantity;
-      } else {
-        utils.showToast(message: "Erro", isError: true);
-      }
-
-
+      await changeItemQuantity(
+          item: product, quantity: (product.quantity + quantity));
     } else {
       //novo item
       final CartResult<String> res = await cartRepository.addItemToCart(
@@ -102,6 +98,53 @@ class CartController extends GetxController {
       quantity: quantity,
     );
 
+    if (res) {
+      if (quantity == 0) {
+        cartItems.removeWhere((cartItem) => cartItem.id == item.id);
+      } else {
+        cartItems.firstWhere((cartItem) => cartItem.id == item.id).quantity =
+            quantity;
+      }
+      update();
+    } else {
+      utils.showToast(message: "Ocorreu um erro ao alterar a qtd do produto");
+    }
+
     return res;
+  }
+
+  void setCheckoutLoading(bool value){
+    isCheckoutLoading = value;
+    update();
+  }
+
+  Future checkoutCart() async {
+  
+    setCheckoutLoading(true);
+
+    CartResult<OrderModel> res = await cartRepository.checkoutCart(
+      token: authController.user.token!,
+      total: cartTotalPrice(),
+    );
+
+    setCheckoutLoading(false);
+
+    res.when(
+      success: (order) {
+
+        cartItems.clear();
+        update();
+
+        showDialog(
+          context: Get.context!,
+          builder: (ctx) {
+            return PaymentDialog(order: order);
+          },
+        );
+      },
+      error: (message) {
+        utils.showToast(message: "Pedido não confirmado");
+      },
+    );
   }
 }

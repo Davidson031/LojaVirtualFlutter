@@ -6,10 +6,12 @@ import 'package:get/get.dart';
 import 'package:quitanda_virtual/src/config/custom_colors.dart';
 import 'package:badges/badges.dart';
 import 'package:quitanda_virtual/src/config/app_data.dart' as appData;
+import 'package:quitanda_virtual/src/pages/cart/controller/cart_controller.dart';
 import 'package:quitanda_virtual/src/pages/common_widgets/custom_shimmer.dart';
 import 'package:quitanda_virtual/src/routes/app_pages.dart';
 import '../../../models/item_model.dart';
 import '../../../services/utils_services.dart';
+import '../../base/controller/navigation.controller.dart';
 import '../../common_widgets/app_name_widget.dart';
 import 'components/cateogory_tile.dart';
 import 'components/item_tile.dart';
@@ -28,6 +30,7 @@ class _HomeTabState extends State<HomeTab> {
   late Function(GlobalKey) runAddToCardAnimation;
   UtilsServices utils = UtilsServices();
   final searchController = TextEditingController();
+  final navigationController = Get.find<NavigationController>();
 
   void itemSelectedCertainAnimations(GlobalKey gkImage) {
     runAddToCardAnimation(gkImage);
@@ -44,22 +47,28 @@ class _HomeTabState extends State<HomeTab> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(top: 15.0, right: 15.0),
-            child: GestureDetector(
-              onTap: () {},
-              child: Badge(
-                badgeColor: CustomColors.customContrastColor,
-                badgeContent: const Text(
-                  "0",
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                ),
-                child: AddToCartIcon(
-                  key: globalKeyCartItems,
-                  icon: Icon(
-                    Icons.shopping_cart,
-                    color: CustomColors.customSwatchColor[900],
+            child: GetBuilder<CartController>(
+              builder: (controller) {
+                return GestureDetector(
+                  onTap: () {
+                    navigationController.navigatePageView(NavigationTabs.cart);
+                  },
+                  child: Badge(
+                    badgeColor: CustomColors.customContrastColor,
+                    badgeContent: Text(
+                      controller.cartItems.length.toString(),
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                    child: AddToCartIcon(
+                      key: globalKeyCartItems,
+                      icon: Icon(
+                        Icons.shopping_cart,
+                        color: CustomColors.customSwatchColor[900],
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           )
         ],
@@ -204,9 +213,10 @@ class _HomeTabState extends State<HomeTab> {
                                 }
                               }
                               return ItemTile(
-                                  item: controller.allProducts[index],
-                                  cartAnimationMethod:
-                                      itemSelectedCertainAnimations);
+                                item: controller.allProducts[index],
+                                cartAnimationMethod:
+                                    itemSelectedCertainAnimations,
+                              );
                             },
                           ),
                         )

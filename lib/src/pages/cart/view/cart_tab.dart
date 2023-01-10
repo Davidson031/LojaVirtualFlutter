@@ -17,6 +17,8 @@ class CartTab extends StatefulWidget {
 class _CartTabState extends State<CartTab> {
   UtilsServices utils = UtilsServices();
 
+  final cartController = Get.find<CartController>();
+
   Future<bool?> showOrderConfirmation() {
     return showDialog<bool>(
       context: context,
@@ -71,6 +73,20 @@ class _CartTabState extends State<CartTab> {
           Expanded(
             child: GetBuilder<CartController>(
               builder: (controller) {
+                if (controller.cartItems.isEmpty) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.remove_shopping_cart,
+                        size: 40,
+                        color: CustomColors.customSwatchColor[900],
+                      ),
+                      const Text("Não há itens no carrinho!")
+                    ],
+                  );
+                }
+
                 return ListView.builder(
                   itemCount: controller.cartItems.length,
                   itemBuilder: (context, index) {
@@ -115,27 +131,31 @@ class _CartTabState extends State<CartTab> {
                 ),
                 SizedBox(
                   height: 50,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      bool? res = await showOrderConfirmation();
-
-                      if (res ?? false) {
-                        showDialog(
-                          context: context,
-                          builder: (ctx) {
-                            return PaymentDialog(order: appData.orders.first);
-                          },
-                        );
-                      }
+                  child: GetBuilder<CartController>(
+                    builder: (controller) {
+                      return ElevatedButton(
+                        onPressed: controller.isCheckoutLoading
+                            ? null
+                            : () async {
+                                bool? res = await showOrderConfirmation();
+                                if (res ?? false) {
+                                  cartController.checkoutCart();
+                                } else {
+                                  utils.showToast(message: "Pedido não confirmado");
+                                }
+                              },
+                        style: ElevatedButton.styleFrom(
+                            primary: CustomColors.customSwatchColor[900],
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18))),
+                        child: controller.isCheckoutLoading
+                            ? const CircularProgressIndicator()
+                            : const Text(
+                                "Concluir pedido",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                      );
                     },
-                    style: ElevatedButton.styleFrom(
-                        primary: CustomColors.customSwatchColor[900],
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18))),
-                    child: const Text(
-                      "Concluir pedido",
-                      style: TextStyle(fontSize: 16),
-                    ),
                   ),
                 )
               ],

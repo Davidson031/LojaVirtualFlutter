@@ -1,3 +1,5 @@
+import 'package:clipboard/clipboard.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:quitanda_virtual/src/services/utils_services.dart';
@@ -29,11 +31,12 @@ class PaymentDialog extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                 ),
-                QrImage(
-                  data: "123415555555555555555512112121266666666666612567890",
-                  version: QrVersions.auto,
-                  size: 200.0,
+                Image.memory(
+                  utils.decodeQrCodeImage(order.qrCodeImage),
+                  height: 200,
+                  width: 200,
                 ),
+                
                 Text(
                   "Vencimento: ${utils.formatDateTime(order.overdueDateTime)}",
                   style: const TextStyle(fontSize: 12),
@@ -44,7 +47,10 @@ class PaymentDialog extends StatelessWidget {
                       fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    FlutterClipboard.copy(order.copyAndPaste);
+                    utils.showToast(message: "Código copiado");
+                  },
                   icon: const Icon(
                     Icons.copy,
                     size: 15,
