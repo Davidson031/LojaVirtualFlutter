@@ -52,19 +52,29 @@ class AuthRepository {
   }
 
   Future<void> resetPassword(String email) async {
-
     await _httpManager.restRequest(
       url: EndPoints.resetPassword,
       method: HttpMethods.post,
+      body: {"email": email},
+    );
+  }
+
+  Future<bool> changePassword({required String email, required String currentPassword, required String newPassord, required String token}) async {
+    final res = await _httpManager.restRequest(
+      url: EndPoints.changePassword,
+      method: HttpMethods.post,
+      headers: {
+        "X-Parse-Session-Token" : token
+      },
       body: {
-        "email": email
+        "email": email,
+        "currentPassword": currentPassword,
+        "newPassword": newPassord,
       },
     );
 
+    return (res['result'] == null);
+
 
   }
-
-
-
-
 }
