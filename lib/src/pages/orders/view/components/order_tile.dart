@@ -3,7 +3,7 @@ import 'package:quitanda_virtual/src/models/cart_item_model.dart';
 import 'package:quitanda_virtual/src/models/order_model.dart';
 import 'package:quitanda_virtual/src/services/utils_services.dart';
 
-import '../../common_widgets/payment_dialog.dart';
+import '../../../common_widgets/payment_dialog.dart';
 import 'order_status_widget.dart';
 
 class OrderTile extends StatelessWidget {

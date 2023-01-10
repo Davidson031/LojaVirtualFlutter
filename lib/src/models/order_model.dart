@@ -11,6 +11,7 @@ class OrderModel {
 
   String id; 
   
+  @JsonKey(name: "createdAt")
   DateTime? createdDateTime;
 
   @JsonKey(name: "due")
